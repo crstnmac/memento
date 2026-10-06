@@ -164,3 +164,7 @@ sync with capture, meeting recording, and nudges.
   `~/Library/Application Support/dev.poppy.memento/memento.db`.
 - The original Native SDK demo (`core.ts`, `app.native`) is archived in
   `legacy/`.
+
+## License
+
+[MIT](LICENSE) © 2026 Criston Mascarenhas.

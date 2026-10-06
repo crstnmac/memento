@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A private local memory layer for your workday."
 authors = ["poppy"]
 edition = "2021"
+license = "MIT"
 
 [lib]
 name = "poppy_lib"
