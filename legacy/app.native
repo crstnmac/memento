@@ -1,0 +1,158 @@
+<column gap="0" background="background">
+  <!-- Header -->
+  <row gap="12" cross="center" background="surface" radius="lg" padding="16">
+    <column gap="2" grow="1">
+      <row gap="8" cross="center">
+        <text size="heading">Memento</text>
+        <if test="{paused}">
+          <badge foreground="warning">Paused</badge>
+        </if>
+        <else>
+          <badge foreground="success">Live</badge>
+        </else>
+      </row>
+      <text foreground="text_muted">Private memory of your workday</text>
+    </column>
+    <button size="sm" variant="primary" on-press="open_add" icon="plus">New memory</button>
+  </row>
+
+  <!-- Filter chips -->
+  <row gap="8" padding="14">
+    <toggle-button size="sm" selected="{filter == 'all'}" on-toggle="show_all">Everything · {memoryCount}</toggle-button>
+    <toggle-button size="sm" selected="{filter == 'open'}" on-toggle="show_open">Open loops · {openLoopCount}</toggle-button>
+    <toggle-button size="sm" selected="{filter == 'meetings'}" on-toggle="show_meetings">Meetings · {meetingCount}</toggle-button>
+  </row>
+
+  <!-- Body: list + detail -->
+  <row gap="14" grow="1" padding="14">
+    <!-- Memory list -->
+    <column gap="8" background="surface" radius="md" padding="12" width="340">
+      <row cross="center" padding="8">
+        <text>Recent memory</text>
+        <spacer grow="1"/>
+        <text foreground="text_muted">{memoryCount} saved</text>
+      </row>
+      <if test="{isEmpty}">
+        <column gap="8" grow="1" padding="16" cross="center" main="center">
+          <icon name="folder-open"/>
+          <text>Nothing here yet</text>
+          <text foreground="text_muted">Try a different filter or add a new memory.</text>
+        </column>
+      </if>
+      <else>
+        <scroll grow="1" overscroll="rubber_band">
+          <column gap="6">
+            <for each="visible" as="memory">
+              <row
+                gap="10"
+                cross="start"
+                on-press="select:{memory.id}"
+                radius="md"
+                padding="6"
+              >
+                <column width="3" radius="sm">
+                  <if test="{memory.id == selectedId}"><panel background="accent" grow="1" radius="sm"/></if>
+                </column>
+                <column gap="4" grow="1">
+                  <row gap="6" cross="center">
+                    <text foreground="text_muted">{memory.source}</text>
+                    <spacer grow="1"/>
+                    <text foreground="text_muted">{memory.age}</text>
+                  </row>
+                  <text>{memory.title}</text>
+                  <text foreground="text_muted" wrap="true">{memory.preview}</text>
+                </column>
+                <if test="{memory.openLoop}">
+                  <badge foreground="accent">loop</badge>
+                </if>
+              </row>
+            </for>
+          </column>
+        </scroll>
+      </else>
+    </column>
+
+    <!-- Detail pane -->
+    <column gap="10" background="surface" radius="md" padding="18" grow="1">
+      <if test="{not hasSelection}">
+        <column grow="1" main="center" cross="center" gap="10">
+          <icon name="eye"/>
+          <text>Select a memory</text>
+          <text foreground="text_muted">Pick anything from the list on the left to read it.</text>
+        </column>
+      </if>
+      <else>
+        <column gap="12" grow="1">
+          <row gap="8" cross="center">
+            <column gap="2" grow="1">
+              <text size="heading">{selectedTitle}</text>
+              <text foreground="text_muted">{selectedSource} · {selectedAge}</text>
+            </column>
+          </row>
+          <row gap="6">
+            <badge foreground="info">{selectedSource}</badge>
+            <if test="{selectedIsMeeting}">
+              <badge foreground="accent">Meeting</badge>
+            </if>
+            <if test="{selectedOpenLoop}">
+              <badge foreground="warning">Open loop</badge>
+            </if>
+            <else>
+              <badge foreground="success">Closed</badge>
+            </else>
+          </row>
+          <separator/>
+          <text wrap="true">{selectedPreview}</text>
+          <spacer grow="1"/>
+        </column>
+      </else>
+    </column>
+  </row>
+
+  <!-- Footer status bar -->
+  <row gap="16" cross="center" background="surface" radius="lg" padding="12">
+    <if test="{paused}">
+      <text foreground="warning">Capture paused</text>
+      <button size="sm" variant="secondary" on-press="toggle_paused">Resume</button>
+    </if>
+    <else>
+      <text foreground="success">Capture active</text>
+      <button size="sm" variant="ghost" on-press="toggle_paused">Pause</button>
+    </else>
+    <spacer grow="1"/>
+    <text foreground="text_muted">{openLoopCount} open loops</text>
+    <text foreground="text_muted">{syncedLabel}</text>
+  </row>
+
+  <!-- New memory dialog -->
+  <if test="{addOpen}">
+    <dialog text="New memory" on-dismiss="close_add">
+      <column gap="14" padding="4">
+        <text-field
+          text="{draft}"
+          placeholder="What are you working on?"
+          on-input="draft_edit"
+          on-submit="add_memory"
+          autofocus="{addOpen}"
+          grow="1"
+        />
+        <column gap="6">
+          <text foreground="text_muted">Source</text>
+          <row gap="6">
+            <toggle-button size="sm" selected="{sourcePick == 'slack'}" on-toggle="pick_slack">Slack</toggle-button>
+            <toggle-button size="sm" selected="{sourcePick == 'notion'}" on-toggle="pick_notion">Notion</toggle-button>
+            <toggle-button size="sm" selected="{sourcePick == 'email'}" on-toggle="pick_email">Email</toggle-button>
+            <toggle-button size="sm" selected="{sourcePick == 'meeting'}" on-toggle="pick_meeting">Meeting</toggle-button>
+            <toggle-button size="sm" selected="{sourcePick == 'note'}" on-toggle="pick_note">Note</toggle-button>
+          </row>
+        </column>
+        <row gap="8" cross="center">
+          <toggle checked="{openLoopDraft}" on-toggle="toggle_open_loop">Open loop</toggle>
+          <spacer grow="1"/>
+          <button size="sm" variant="ghost" on-press="close_add">Cancel</button>
+          <button size="sm" variant="primary" disabled="{not hasDraft}" on-press="add_memory">Save</button>
+        </row>
+      </column>
+    </dialog>
+  </if>
+</column>

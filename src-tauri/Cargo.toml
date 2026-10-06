@@ -1,0 +1,56 @@
+[package]
+name = "poppy"
+version = "0.1.0"
+description = "A private local memory layer for your workday."
+authors = ["poppy"]
+edition = "2021"
+
+[lib]
+name = "poppy_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [ "tray-icon", "image-png", "macos-private-api"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+dirs = "5"
+cpal = "0.18"
+hound = "3.5"
+parking_lot = "0.12"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-macos-permissions = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-window-state = "2"
+tauri-plugin-log = "2"
+tauri-plugin-deep-link = "2"
+log = "0.4"
+tiny_http = "0.12.0"
+ureq = { version = "2.12", features = ["json"] }
+transcribe-rs = { version = "0.3", features = ["whisper-metal"] }
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+plist = "1.10"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+screencapturekit = { version = "8", features = ["macos_13_0"] }
+objc2 = "0.6"
+objc2-app-kit = "0.3"
+objc2-core-foundation = "0.3"
+objc2-core-graphics = "0.3"
+objc2-application-services = "0.3"
+objc2-av-foundation = { version = "0.3", default-features = false, features = ["std", "AVCaptureDevice", "AVMediaFormat", "block2"] }
+objc2-foundation = "0.3"
+block2 = "0.6"
+libc = "0.2"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

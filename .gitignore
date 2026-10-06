@@ -1,0 +1,71 @@
+# --- Dependencies -----------------------------------------------------------
+node_modules/
+
+# --- Build output -----------------------------------------------------------
+dist/
+src-tauri/target/
+src-tauri/gen/
+*.app
+*.dmg
+*.pkg
+*.rs.bk
+
+# --- Secrets and signing material (never commit) ----------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.provisionprofile
+.secrets/
+# Apple notarization / signing is configured through environment variables;
+# see docs/release.md.
+
+# --- Local data (the app keeps its database and recordings outside the repo,
+#     but these guard against a copy landing in the project folder) ------------
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.wav
+*.gguf
+
+# --- Logs and temp files ----------------------------------------------------
+*.log
+npm-debug.log*
+*.tmp
+*.swp
+*~
+
+# --- OS / editor ------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- Python (icon generator script) -----------------------------------------
+__pycache__/
+*.pyc
+
+# --- Design-tool output ------------------------------------------------------
+# Keep .impeccable/design.json and .impeccable/surfaces/ (text sources).
+# Screenshots/mocks are generated, large, and may contain real captured memories.
+.impeccable/mocks/
+.impeccable/review/
+# Reference screenshot of another product's UI.
+.design-settings.png
+# Contact sheet used to review the menu-bar icons; not shipped.
+src-tauri/icons/tray/tray-preview.png
+
+# --- Native SDK (legacy build artifacts) ------------------------------------
+.native/
+zig-out/
+.zig-cache/

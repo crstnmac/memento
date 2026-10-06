@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-28T00:00:00+05:30",
+  "title": "Design System: Memento",
+  "extensions": {
+    "colorMeta": {
+      "shell": { "role": "neutral", "displayName": "Deep Graphite Shell", "canonical": "oklch(0.125 0.008 285)", "tonalRamp": ["oklch(0.15 0.008 285)", "oklch(0.26 0.008 285)", "oklch(0.38 0.008 285)", "oklch(0.50 0.008 285)", "oklch(0.63 0.008 285)", "oklch(0.76 0.008 285)", "oklch(0.88 0.008 285)", "oklch(0.95 0.008 285)"] },
+      "workspace": { "role": "neutral", "displayName": "Graphite Workspace", "canonical": "oklch(0.135 0.008 285)", "tonalRamp": ["oklch(0.15 0.008 285)", "oklch(0.26 0.008 285)", "oklch(0.38 0.008 285)", "oklch(0.50 0.008 285)", "oklch(0.63 0.008 285)", "oklch(0.76 0.008 285)", "oklch(0.88 0.008 285)", "oklch(0.95 0.008 285)"] },
+      "surface": { "role": "neutral", "displayName": "Ink Surface", "canonical": "oklch(0.165 0.008 285)", "tonalRamp": ["oklch(0.15 0.008 285)", "oklch(0.26 0.008 285)", "oklch(0.38 0.008 285)", "oklch(0.50 0.008 285)", "oklch(0.63 0.008 285)", "oklch(0.76 0.008 285)", "oklch(0.88 0.008 285)", "oklch(0.95 0.008 285)"] },
+      "raised-surface": { "role": "neutral", "displayName": "Raised Graphite", "canonical": "oklch(0.19 0.009 285)", "tonalRamp": ["oklch(0.15 0.009 285)", "oklch(0.26 0.009 285)", "oklch(0.38 0.009 285)", "oklch(0.50 0.009 285)", "oklch(0.63 0.009 285)", "oklch(0.76 0.009 285)", "oklch(0.88 0.009 285)", "oklch(0.95 0.009 285)"] },
+      "text": { "role": "neutral", "displayName": "Paper Text", "canonical": "oklch(0.94 0.008 285)", "tonalRamp": ["oklch(0.15 0.008 285)", "oklch(0.26 0.008 285)", "oklch(0.38 0.008 285)", "oklch(0.50 0.008 285)", "oklch(0.63 0.008 285)", "oklch(0.76 0.008 285)", "oklch(0.88 0.008 285)", "oklch(0.94 0.008 285)"] },
+      "muted-text": { "role": "neutral", "displayName": "Quiet Text", "canonical": "oklch(0.66 0.012 285)", "tonalRamp": ["oklch(0.15 0.012 285)", "oklch(0.26 0.012 285)", "oklch(0.38 0.012 285)", "oklch(0.50 0.012 285)", "oklch(0.63 0.012 285)", "oklch(0.76 0.012 285)", "oklch(0.88 0.012 285)", "oklch(0.95 0.012 285)"] },
+      "rule": { "role": "neutral", "displayName": "Soft Rule", "canonical": "oklch(0.29 0.012 285 / 72%)", "tonalRamp": ["oklch(0.15 0.012 285)", "oklch(0.26 0.012 285)", "oklch(0.38 0.012 285)", "oklch(0.50 0.012 285)", "oklch(0.63 0.012 285)", "oklch(0.76 0.012 285)", "oklch(0.88 0.012 285)", "oklch(0.95 0.012 285)"] },
+      "violet": { "role": "primary", "displayName": "Memory Violet", "canonical": "oklch(0.67 0.18 285)", "tonalRamp": ["oklch(0.15 0.08 285)", "oklch(0.26 0.13 285)", "oklch(0.38 0.17 285)", "oklch(0.50 0.18 285)", "oklch(0.63 0.18 285)", "oklch(0.76 0.14 285)", "oklch(0.88 0.08 285)", "oklch(0.95 0.04 285)"] },
+      "green": { "role": "secondary", "displayName": "Capture Green", "canonical": "oklch(0.72 0.15 155)", "tonalRamp": ["oklch(0.15 0.05 155)", "oklch(0.26 0.08 155)", "oklch(0.38 0.11 155)", "oklch(0.50 0.15 155)", "oklch(0.63 0.15 155)", "oklch(0.76 0.12 155)", "oklch(0.88 0.07 155)", "oklch(0.95 0.03 155)"] },
+      "amber": { "role": "secondary", "displayName": "Pause Amber", "canonical": "oklch(0.76 0.14 75)", "tonalRamp": ["oklch(0.15 0.05 75)", "oklch(0.26 0.08 75)", "oklch(0.38 0.11 75)", "oklch(0.50 0.14 75)", "oklch(0.63 0.14 75)", "oklch(0.76 0.12 75)", "oklch(0.88 0.07 75)", "oklch(0.95 0.03 75)"] },
+      "red": { "role": "secondary", "displayName": "Destructive Red", "canonical": "oklch(0.68 0.19 25)", "tonalRamp": ["oklch(0.15 0.08 25)", "oklch(0.26 0.13 25)", "oklch(0.38 0.17 25)", "oklch(0.50 0.19 25)", "oklch(0.63 0.19 25)", "oklch(0.76 0.14 25)", "oklch(0.88 0.08 25)", "oklch(0.95 0.04 25)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Page Title", "purpose": "Primary route title in the shared header." },
+      "title": { "displayName": "Compact Title", "purpose": "Section headings, memory titles, and emphasized rows." },
+      "body": { "displayName": "Application Body", "purpose": "Default interface copy and explanations." },
+      "label": { "displayName": "Metadata Label", "purpose": "Status, time, counts, and compact metadata." }
+    },
+    "shadows": [
+      { "name": "workspace-lift", "value": "0 14px 40px oklch(0.05 0.01 285 / 30%)", "purpose": "Separates the single inset route plane from the shell." },
+      { "name": "focus-halo", "value": "0 0 0 3px color-mix(in oklch, var(--ring), transparent 50%)", "purpose": "Visible keyboard focus." }
+    ],
+    "motion": [
+      { "name": "state-transition", "value": "120-180ms ease", "purpose": "Brief hover, focus, and selection feedback." },
+      { "name": "pressed-step", "value": "translateY(1px)", "purpose": "Tactile button activation." },
+      { "name": "capture-breathe", "value": "2.8s ease-in-out infinite", "purpose": "Confirms active capture; removed under reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "application-minimum", "value": "760px" },
+      { "name": "corrected-narrow-shell", "value": "900px" },
+      { "name": "large-content-padding", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The compact violet action for the primary next step.",
+      "html": "<button class=\"ds-btn-primary\">Add note</button>",
+      "css": ".ds-btn-primary { height: 32px; padding: 0 10px; border: 1px solid transparent; border-radius: 7.7px; background: oklch(0.67 0.18 285); color: oklch(0.985 0.003 285); font: 500 14px/1 'Geist Variable', sans-serif; transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; } .ds-btn-primary:hover { background: color-mix(in oklch, oklch(0.67 0.18 285), transparent 20%); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px oklch(0.67 0.18 285 / 50%); } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "A bordered neutral action subordinate to violet.",
+      "html": "<button class=\"ds-btn-outline\">Open System Settings</button>",
+      "css": ".ds-btn-outline { height: 32px; padding: 0 10px; border: 1px solid oklch(0.29 0.012 285 / 72%); border-radius: 7.7px; background: oklch(0.165 0.008 285); color: oklch(0.94 0.008 285); font: 500 14px/1 'Geist Variable', sans-serif; transition: background-color 150ms ease, transform 150ms ease, box-shadow 150ms ease; } .ds-btn-outline:hover { background: oklch(0.215 0.009 285); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 3px oklch(0.67 0.18 285 / 50%); } .ds-btn-outline:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A compact dark field with strong violet keyboard focus.",
+      "html": "<input class=\"ds-input\" aria-label=\"Search memory\" placeholder=\"Search your memory\" />",
+      "css": ".ds-input { width: 100%; height: 32px; padding: 4px 10px; border: 1px solid oklch(0.31 0.012 285); border-radius: 7.7px; background: transparent; color: oklch(0.94 0.008 285); font: 400 13px/20px 'Geist Variable', sans-serif; transition: border-color 150ms ease, box-shadow 150ms ease; } .ds-input::placeholder { color: oklch(0.66 0.012 285); } .ds-input:hover { border-color: oklch(0.29 0.012 285 / 72%); } .ds-input:focus-visible { outline: none; border-color: oklch(0.67 0.18 285); box-shadow: 0 0 0 3px oklch(0.67 0.18 285 / 50%); }"
+    },
+    {
+      "name": "Active Navigation Item",
+      "kind": "nav",
+      "refersTo": "navigation-item-active",
+      "description": "The selected icon-plus-text destination in either rail.",
+      "html": "<button class=\"ds-nav-active\" aria-current=\"page\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><span>Today</span></button>",
+      "css": ".ds-nav-active { display: flex; align-items: center; gap: 10px; width: 100%; height: 32px; padding: 0 8px; border: 0; border-radius: 6.1px; background: oklch(0.225 0.025 285); color: oklch(0.95 0.008 285); font: 500 13px/1 'Geist Variable', sans-serif; text-align: left; transition: background-color 150ms ease, box-shadow 150ms ease; } .ds-nav-active svg { width: 16px; height: 16px; } .ds-nav-active:focus-visible { outline: none; box-shadow: 0 0 0 2px oklch(0.67 0.18 285 / 40%); }"
+    },
+    {
+      "name": "Settings Group",
+      "kind": "card",
+      "description": "A bounded settings section whose related rows share one quiet container.",
+      "html": "<section class=\"ds-settings-group\"><div><strong>Remember my work</strong><span>Pause anytime from the bottom of the sidebar.</span></div><button aria-label=\"Enabled\" class=\"ds-switch\"><i></i></button></section>",
+      "css": ".ds-settings-group { display: flex; min-height: 64px; align-items: center; gap: 16px; padding: 12px 16px; border: 1px solid oklch(0.29 0.012 285 / 72%); border-radius: 7.7px; background: oklch(0.19 0.009 285 / 40%); color: oklch(0.94 0.008 285); font-family: 'Geist Variable', sans-serif; } .ds-settings-group > div { min-width: 0; flex: 1; } .ds-settings-group strong, .ds-settings-group span { display: block; } .ds-settings-group strong { font-size: 13px; } .ds-settings-group span { margin-top: 4px; color: oklch(0.66 0.012 285); font-size: 12px; } .ds-switch { position: relative; width: 32px; height: 18px; border: 0; border-radius: 999px; background: oklch(0.67 0.18 285); } .ds-switch i { position: absolute; top: 1px; right: 1px; width: 16px; height: 16px; border-radius: 999px; background: oklch(0.985 0.003 285); } .ds-switch:focus-visible { outline: none; box-shadow: 0 0 0 3px oklch(0.67 0.18 285 / 50%); }"
+    },
+    {
+      "name": "Timeline Moment",
+      "kind": "custom",
+      "description": "An open chronological row with a fine rule and rounded-square source mark.",
+      "html": "<div class=\"ds-timeline\"><time>10:30 AM</time><span class=\"ds-node\">M</span><button><strong>Team sync</strong><span>Aligned on onboarding improvements and next steps.</span><small>Google Meet</small></button></div>",
+      "css": ".ds-timeline { position: relative; min-height: 112px; padding: 20px 0 20px 32px; border-left: 1px solid oklch(0.29 0.012 285 / 72%); color: oklch(0.94 0.008 285); font-family: 'Geist Variable', sans-serif; } .ds-timeline time { position: absolute; right: calc(100% + 20px); top: 24px; color: oklch(0.66 0.012 285); font-size: 12px; white-space: nowrap; } .ds-node { position: absolute; left: -15px; top: 20px; display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid oklch(0.29 0.012 285 / 72%); border-radius: 6.1px; background: oklch(0.19 0.009 285); color: oklch(0.66 0.012 285); } .ds-timeline button { display: flex; flex-direction: column; align-items: flex-start; padding: 0 4px; border: 0; border-radius: 7.7px; background: transparent; color: inherit; text-align: left; } .ds-timeline button:focus-visible { outline: none; box-shadow: 0 0 0 2px oklch(0.67 0.18 285 / 40%); } .ds-timeline strong { font-size: 14px; } .ds-timeline button > span { margin-top: 4px; color: oklch(0.66 0.012 285); font-size: 14px; line-height: 24px; } .ds-timeline small { margin-top: 8px; color: oklch(0.66 0.012 285 / 80%); font-size: 12px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Graphite Memory Desk",
+    "overview": "Memento is a compact professional workspace inspired by Linear's desktop density and composure. A dim graphite shell holds one slightly brighter, bordered work surface; restrained violet marks selection, focus, and decisive action. The result feels quiet, precise, and continuously available rather than ornamental or dashboard-like.\n\nThe system serves Memento's chronological memory model. Today foregrounds evidence from the workday, Search restores context, Follow-ups expose commitments, and Settings contains technical machinery in a secondary nested rail. Linear is the craft benchmark, not a feature template.",
+    "keyCharacteristics": ["Graphite-on-graphite hierarchy with one violet interaction voice.", "A persistent global rail surrounding a single inset workspace.", "Compact 13px controls, explicit labels, fine rules, and restrained fills.", "Route-owned scrolling inside a stable application frame.", "Brief functional motion and visible keyboard focus."],
+    "rules": [
+      { "name": "The One Violet Voice Rule", "body": "Violet means selected, focused, current, or primary action. Do not spend it on neutral decoration.", "section": "colors" },
+      { "name": "The Labeled Status Rule", "body": "Green, amber, and red never carry meaning alone.", "section": "colors" },
+      { "name": "The Compact Hierarchy Rule", "body": "Prefer one clear step in size or weight at a time; avoid ornamental type, excessive uppercase, and competing headlines.", "section": "typography" },
+      { "name": "The Stable Frame Rule", "body": "Keep the shell fixed and assign overflow to the rail, route body, list, or detail pane that owns the content.", "section": "layout" },
+      { "name": "The One Lifted Plane Rule", "body": "The route workspace is the persistent lifted plane. Ordinary rows stay flat; fills are reserved for selection, bounded settings groups, and feedback.", "section": "elevation" }
+    ],
+    "dos": ["Do preserve the graphite shell, inset work surface, and violet interaction hierarchy.", "Do use the shared workspace, header, and content primitives for every route.", "Do preserve both rails at <=900px using 208px / 176px widths.", "Do use open rows, fine separators, and compact explicit controls before filled containers.", "Do retain visible keyboard focus and status labels.", "Do keep scrollbars quiet, thin, and consistent."],
+    "donts": ["Don't turn the workspace into a dashboard of floating cards.", "Don't reintroduce the obsolete daylight paper and cornflower palette.", "Don't collapse or overlay navigation at the 900px breakpoint.", "Don't put overflow on the document or outer shell.", "Don't use shadows, gradients, glass effects, or bright accents as decoration.", "Don't hide primary workflows or status behind icon-only controls."]
+  }
+}
