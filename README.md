@@ -5,6 +5,12 @@ modeled on tools like Minimi/Shram, but with **no cloud database and no data
 leaving your Mac**. It watches what you work on, turns it into searchable
 memory, and helps you keep track of the things you promised to do.
 
+<p align="center">
+  <img src="docs/screenshots/today.png" alt="Memento's Today screen: a short summary of the day, open follow-ups, and a timeline of captured activity" width="900">
+</p>
+
+<p align="center"><sub>The Today screen. Screenshot uses sample data.</sub></p>
+
 ## What it does
 
 - **Runs from the menu bar.** Captures quietly in the background; the main
