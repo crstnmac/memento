@@ -16,10 +16,10 @@ memory, and helps you keep track of the things you promised to do.
 <p align="center"><sub>The Today screen.</sub></p>
 
 <p align="center">
-  <img src="docs/screenshots/popover.png" alt="Memento's menu-bar popover: capture status, pause and record controls, a quick note box, and open follow-ups" width="340">
+  <img src="docs/screenshots/popover.png" alt="Memento's menu-bar popover: capture status, an Ask your day box, pause and record controls, a quick note box, and open follow-ups" width="340">
 </p>
 
-<p align="center"><sub>The menu-bar popover: pause, record, jot a note, or tick off a follow-up without opening the app.<br>Screenshots use sample data.</sub></p>
+<p align="center"><sub>The menu-bar popover: ask a question, pause, record, jot a note, or tick off a follow-up without opening the app.<br>Screenshots use sample data.</sub></p>
 
 ## What it does
 
@@ -53,10 +53,13 @@ memory, and helps you keep track of the things you promised to do.
   closed. "micwatch" can auto-start when a meeting app comes forward and
   auto-stop when it ends, with a max-duration clamp so recordings never run
   forever.
-- **Ask your day, over anything (⌘⇧L).** A floating, always-on-top pill
-  expands into a chat panel that answers from the current screen (frontmost
-  app, window title, selected text), your captured memory, and open
-  follow-ups — via your local LLM, fully on-device.
+- **Ask your day, over anything.** Open it with ⌘⇧L from any app, from
+  **Ask your day** in the sidebar, or from the menu-bar popover. A floating,
+  always-on-top panel answers from the current screen (frontmost app, window
+  title, selected text), your captured memory, and open follow-ups. Questions
+  can name a time ("what did I promise last Tuesday?"). With a local LLM it
+  writes an answer; **without one it still works** and shows the matching
+  memories and follow-ups it found. Everything stays on-device.
 - **Timed pause & hourly check-in.** The tray can pause capture for 5/10/30/60
   minutes with auto-resume, and a quiet hourly notification summarizes the
   past hour (memories, follow-ups) honoring Do Not Disturb.
