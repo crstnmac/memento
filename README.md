@@ -1,4 +1,8 @@
-# Memento
+<p align="center">
+  <img src="assets/icon.png" alt="Memento logo: two stacked cards on a dark rounded square" width="128">
+</p>
+
+<h1 align="center">Memento</h1>
 
 A **private, local-first memory layer for your workday** — a native macOS app
 modeled on tools like Minimi/Shram, but with **no cloud database and no data
@@ -9,7 +13,13 @@ memory, and helps you keep track of the things you promised to do.
   <img src="docs/screenshots/today.png" alt="Memento's Today screen: a short summary of the day, open follow-ups, and a timeline of captured activity" width="900">
 </p>
 
-<p align="center"><sub>The Today screen. Screenshot uses sample data.</sub></p>
+<p align="center"><sub>The Today screen.</sub></p>
+
+<p align="center">
+  <img src="docs/screenshots/popover.png" alt="Memento's menu-bar popover: capture status, pause and record controls, a quick note box, and open follow-ups" width="340">
+</p>
+
+<p align="center"><sub>The menu-bar popover: pause, record, jot a note, or tick off a follow-up without opening the app.<br>Screenshots use sample data.</sub></p>
 
 ## What it does
 
