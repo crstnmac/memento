@@ -2,6 +2,7 @@ import {
   SearchIcon,
   SparklesIcon,
   CheckCircle2Icon,
+  MessageCircleIcon,
   MicIcon,
   PauseIcon,
   PlayIcon,
@@ -26,9 +27,11 @@ interface SidebarProps {
   paused: boolean;
   onPauseToggle: () => void;
   onRecord: () => void;
+  /** Opens the floating "Ask your day" panel (also ⌘⇧L from anywhere). */
+  onAsk: () => void;
 }
 
-export function Sidebar({ view, onChange, actionCount, paused, onPauseToggle, onRecord }: SidebarProps) {
+export function Sidebar({ view, onChange, actionCount, paused, onPauseToggle, onRecord, onAsk }: SidebarProps) {
   return (
     <nav aria-label="Main navigation" className="app-sidebar">
       <ScrollArea className="min-h-0 flex-1">
@@ -51,6 +54,19 @@ export function Sidebar({ view, onChange, actionCount, paused, onPauseToggle, on
             </button>
           );
         })}
+        {/* Not a page: it opens a floating panel so you can ask about whatever
+            is on screen, so it is a button, not a navigation item. */}
+        <button
+          type="button"
+          className="nav-item"
+          onClick={onAsk}
+          title="Ask your day (⌘⇧L)"
+          aria-label="Ask your day, keyboard shortcut Command Shift L"
+        >
+          <MessageCircleIcon />
+          <span>Ask your day</span>
+          <kbd className="ml-auto font-sans text-[10px] text-muted-foreground" aria-hidden="true">⌘⇧L</kbd>
+        </button>
       </div>
 
       <div className="mt-auto border-t pt-4">

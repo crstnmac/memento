@@ -6,6 +6,7 @@ import {
   CircleCheckIcon,
   CircleSlashIcon,
   EyeOffIcon,
+  MessageCircleIcon,
   MicIcon,
   PauseIcon,
   PlayIcon,
@@ -281,6 +282,18 @@ export default function TrayPanel() {
               </Button>
             )}
           </section>
+
+          {/* Ask — the same floating panel as ⌘⇧L, one click from the menu bar. */}
+          <button
+            type="button"
+            onClick={() => { void trayApi.askYourDay().then(() => trayApi.hide()); }}
+            className="flex h-9 w-full items-center gap-2 rounded-lg border bg-background/60 px-3 text-left text-sm text-muted-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50"
+            aria-label="Ask your day, keyboard shortcut Command Shift L"
+          >
+            <MessageCircleIcon className="size-4 shrink-0" aria-hidden="true" />
+            <span className="min-w-0 flex-1 truncate">Ask about your day…</span>
+            <kbd className="font-sans text-[10px]" aria-hidden="true">⌘⇧L</kbd>
+          </button>
 
           {/* 2. Controls */}
           <section aria-label="Controls" className="space-y-1.5">

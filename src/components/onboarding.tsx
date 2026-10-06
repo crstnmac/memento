@@ -305,6 +305,14 @@ export function Onboarding({ onDone }: OnboardingProps) {
           </label>
         ) : null}
 
+        <p className="mt-4 text-xs leading-5 text-muted-foreground">
+          <span className="font-medium text-foreground">Tip:</span> press{" "}
+          <kbd className="rounded border bg-muted px-1 py-0.5 font-sans text-[11px] text-foreground">⌘⇧L</kbd>{" "}
+          anywhere to ask about your day, and{" "}
+          <kbd className="rounded border bg-muted px-1 py-0.5 font-sans text-[11px] text-foreground">⌘⇧M</kbd>{" "}
+          to jot a note.
+        </p>
+
         <Separator className="my-4" />
 
         <div className="flex items-center justify-end gap-2">

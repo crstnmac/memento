@@ -41,6 +41,8 @@ export const trayApi = {
     invoke<void>("set_action_item_status", { id, status: "resolved" }),
   insertNote: (text: string) => invoke<unknown>("insert_note", { text }),
   hide: () => invoke<null>("tray_panel_hide"),
+  /** Opens the floating "Ask your day" panel. */
+  askYourDay: () => invoke<void>("overlay_expand"),
   openMainView: (view: MainView) => invoke<null>("open_main_view", { view }),
 };
 

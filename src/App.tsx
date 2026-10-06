@@ -103,6 +103,7 @@ function Shell() {
         paused={status?.paused ?? false}
         onPauseToggle={handlePauseToggle}
         onRecord={() => setView("meetings")}
+        onAsk={() => { void api.overlayExpand(); }}
       />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[var(--workspace)]">
         <main className="flex min-h-0 flex-1 flex-col overflow-hidden">

@@ -450,6 +450,20 @@ pub struct Prompt {
     pub user: String,
     /// False when a scoped question found nothing at all in its range.
     pub has_data: bool,
+    /// The same findings as plain text for the user, used when no language
+    /// model is connected (or it fails): what Memento remembers, not a guess.
+    pub local: String,
+}
+
+/// One memory as a short, readable bullet.
+fn local_line(m: &db::MemoryRow, off: Offset) -> String {
+    format!(
+        "• {} · {} — {}\n  {}\n",
+        fmt_local(m.created_at, off),
+        m.app.as_deref().unwrap_or(m.source.as_str()),
+        m.title,
+        snippet(&m.content, 140)
+    )
 }
 
 /// Gather everything the model may use. Pure DB work, safe to run under the
@@ -463,6 +477,7 @@ pub fn build_prompt(
     off: Offset,
 ) -> Result<Prompt, String> {
     let mut user = String::new();
+    let mut local = String::new();
     let mut has_data = true;
 
     let Some(scope) = &parsed.scope else {
@@ -470,7 +485,27 @@ pub fn build_prompt(
         if let Some(screen) = screen {
             user.push_str(screen);
         }
-        let rows = db.search_text(question, 5).unwrap_or_default();
+        // Search by the significant words, any of which may match: searching
+        // the whole sentence required every word ("what", "did", "ask"…) to
+        // appear in one memory, so ordinary questions found nothing.
+        let by_keywords = fts_expression(&keywords(&parsed.topic))
+            .and_then(|expr| {
+                memories_where(
+                    db,
+                    "SELECT m.id, m.source, m.app, m.title, m.content, m.created_at, m.is_meeting, m.open_loop
+                     FROM memories_fts JOIN memories m ON m.id = memories_fts.rowid
+                     WHERE memories_fts MATCH ?1
+                     ORDER BY bm25(memories_fts, 1.0, 1.5) LIMIT 5",
+                    &[&expr],
+                )
+                .ok()
+            })
+            .unwrap_or_default();
+        let rows = if by_keywords.is_empty() {
+            db.search_text(question, 5).unwrap_or_default()
+        } else {
+            by_keywords
+        };
         if !rows.is_empty() {
             user.push_str("\nRelevant memories:\n");
             for row in &rows {
@@ -495,8 +530,22 @@ pub fn build_prompt(
                 ));
             }
         }
+        // Plain-text answer: best matches, else what was most recent.
+        if !rows.is_empty() {
+            local.push_str("Best matches:\n");
+            rows.iter().for_each(|row| local.push_str(&local_line(row, off)));
+        } else if !recent.is_empty() {
+            local.push_str("Nothing matched those words, so here is what you captured most recently:\n");
+            recent.iter().for_each(|row| local.push_str(&local_line(row, off)));
+        }
+        if !open.is_empty() {
+            local.push_str("\nOpen follow-ups:\n");
+            for item in open.iter().take(5) {
+                local.push_str(&format!("• {}{}\n", item.content, if item.is_urgent { " (urgent)" } else { "" }));
+            }
+        }
         user.push_str(&format!("\nQuestion: {question}"));
-        return Ok(Prompt { user, has_data });
+        return Ok(Prompt { user, has_data, local });
     };
 
     let (start, end) = (scope.start, scope.end);
@@ -601,6 +650,7 @@ pub fn build_prompt(
     }
 
     let mut seen: Vec<i64> = Vec::new();
+    let mut relevant_rows: Vec<db::MemoryRow> = Vec::new();
     let words = keywords(&parsed.topic);
     if let Some(expr) = fts_expression(&words) {
         let rows = memories_where(
@@ -619,6 +669,7 @@ pub fn build_prompt(
                 seen.push(row.id);
                 user.push_str(&memory_line(row, 400, off));
             }
+            relevant_rows = rows;
         }
     }
     let recent = memories_where(
@@ -651,8 +702,39 @@ pub fn build_prompt(
             ));
         }
     }
+    // Plain-text answer for the same range.
+    local.push_str(&format!(
+        "{total} {} from {}",
+        if total == 1 { "memory" } else { "memories" },
+        scope.label
+    ));
+    if !apps.is_empty() {
+        let list = apps.iter().map(|(a, n)| format!("{a} {n}")).collect::<Vec<_>>().join(", ");
+        local.push_str(&format!(" ({list})"));
+    }
+    local.push_str(".\n");
+    if !relevant_rows.is_empty() {
+        local.push_str("\nBest matches:\n");
+        relevant_rows.iter().for_each(|row| local.push_str(&local_line(row, off)));
+    } else if !recent.is_empty() {
+        local.push_str("\nMost recent:\n");
+        recent.iter().take(5).for_each(|row| local.push_str(&local_line(row, off)));
+    }
+    if !convs.is_empty() {
+        local.push_str("\nMeetings and voice notes:\n");
+        for (_, title, kind, started, duration) in &convs {
+            let minutes = duration.map(|d| format!(", {} min", (d / 60_000).max(1))).unwrap_or_default();
+            local.push_str(&format!("• {title} ({kind}, {}{minutes})\n", fmt_local(*started, off)));
+        }
+    }
+    if !follow_ups.is_empty() {
+        local.push_str("\nFollow-ups:\n");
+        for (content, status, urgent) in &follow_ups {
+            local.push_str(&format!("• {content} [{status}]{}\n", if *urgent { " (urgent)" } else { "" }));
+        }
+    }
     user.push_str(&format!("\nQuestion: {question}"));
-    Ok(Prompt { user, has_data })
+    Ok(Prompt { user, has_data, local })
 }
 
 fn none_found(scope: &Scope) -> String {
@@ -689,10 +771,50 @@ fn answer_at(
     if let (Some(scope), false) = (&parsed.scope, prompt.has_data) {
         return Ok(none_found(scope));
     }
-    let config = config?.ok_or_else(|| {
-        "Chat needs a local LLM. In Settings → Smart summaries, enable “Enrich captured memories” with Ollama running.".to_string()
-    })?;
-    llm::chat_completion_with(&config, SYSTEM, &prompt.user)
+    // Searching Memento's own data needs no model, so a missing or failing
+    // model degrades to "here is what I found" instead of an error.
+    match config {
+        Ok(Some(config)) => match llm::chat_completion_with(&config, SYSTEM, &prompt.user) {
+            Ok(text) => Ok(text),
+            Err(error) => Ok(local_answer(
+                &prompt.local,
+                &format!("The language model didn't respond ({}), so here is what I found in your memory.", brief(&error)),
+                "Check the model in Settings → Memory & vault → Smart summaries.",
+            )),
+        },
+        Ok(None) => Ok(local_answer(
+            &prompt.local,
+            "No language model is connected, so I can't write an answer — here is what I found in your memory.",
+            "Connect a model in Settings → Memory & vault → Smart summaries to get written answers.",
+        )),
+        Err(error) => Ok(local_answer(
+            &prompt.local,
+            &format!("The language model isn't set up correctly ({}), so here is what I found in your memory.", brief(&error)),
+            "Check the model in Settings → Memory & vault → Smart summaries.",
+        )),
+    }
+}
+
+/// Error text short enough for a chat bubble.
+fn brief(error: &str) -> String {
+    let flat = error.split_whitespace().collect::<Vec<_>>().join(" ");
+    if flat.chars().count() > 110 {
+        format!("{}…", flat.chars().take(110).collect::<String>())
+    } else {
+        flat
+    }
+}
+
+/// What the overlay shows when there is no model answer: why, what was found,
+/// and how to get proper answers.
+fn local_answer(body: &str, reason: &str, tip: &str) -> String {
+    let body = body.trim_end();
+    let body = if body.is_empty() {
+        "Nothing in your memory matches that yet."
+    } else {
+        body
+    };
+    format!("{reason}\n\n{body}\n\n{tip}")
 }
 
 fn screen_context() -> String {
@@ -873,6 +995,60 @@ mod tests {
             )
             .unwrap();
         db.conn.last_insert_rowid()
+    }
+
+    fn fixture_db() -> Db {
+        let db = db::open_in_memory_for_test().unwrap();
+        db.insert_memory("capture", Some("Slack"), "#design-review", "Priya: can you send the revised mockups by Friday?", false, false, None).unwrap();
+        db.insert_memory("note", Some("Memento"), "Dentist", "Call the dentist to move the appointment", false, true, None).unwrap();
+        db
+    }
+
+    #[test]
+    fn the_local_answer_lists_matching_memories_and_follow_ups() {
+        let db = fixture_db();
+        db.insert_action_item_if_missing(1, "Send the revised mockups to Priya", true, None).unwrap();
+        let now = db::now_ms();
+        let parsed = parse_question("what did Priya ask for", now, &utc);
+        let prompt = build_prompt(&db, "what did Priya ask for", &parsed, None, now, &utc).unwrap();
+        assert!(prompt.local.contains("Best matches:"), "{}", prompt.local);
+        assert!(prompt.local.contains("#design-review"), "{}", prompt.local);
+        assert!(prompt.local.contains("revised mockups"));
+        assert!(prompt.local.contains("Open follow-ups:") && prompt.local.contains("(urgent)"));
+    }
+
+    #[test]
+    fn a_scoped_local_answer_states_the_range_and_counts() {
+        let db = fixture_db();
+        let now = db::now_ms();
+        let parsed = parse_question("what did I do today", now, &utc);
+        let prompt = build_prompt(&db, "what did I do today", &parsed, None, now, &utc).unwrap();
+        assert!(prompt.local.starts_with("2 memories from today"), "{}", prompt.local);
+        assert!(prompt.local.contains("Slack 1") && prompt.local.contains("Memento 1"));
+        assert!(prompt.local.contains("Most recent:"));
+    }
+
+    #[test]
+    fn with_no_model_the_answer_is_what_memory_holds_not_an_error() {
+        let state = MonitorState::new(fixture_db());
+        let text = answer(&state, "what did Priya ask for").expect("must not be an error");
+        assert!(text.starts_with("No language model is connected"), "{text}");
+        assert!(text.contains("revised mockups"), "{text}");
+        assert!(text.contains("Settings → Memory & vault → Smart summaries"), "{text}");
+    }
+
+    #[test]
+    fn nothing_found_says_so_plainly() {
+        let state = MonitorState::new(db::open_in_memory_for_test().unwrap());
+        let text = answer(&state, "what did Priya ask for").unwrap();
+        assert!(text.contains("Nothing in your memory matches that yet."), "{text}");
+    }
+
+    #[test]
+    fn long_model_errors_are_shortened_for_the_bubble() {
+        let long = "x ".repeat(200);
+        assert!(brief(&long).chars().count() <= 111);
+        assert!(brief("short  error\n here").contains("short error here"));
     }
 
     #[test]
