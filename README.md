@@ -1,27 +1,64 @@
 <p align="center">
-  <img src="assets/icon.png" alt="Memento logo: two stacked cards on a dark rounded square" width="128">
+  <img src="assets/icon.png" alt="Memento logo: two stacked cards on a dark rounded square" width="112">
 </p>
 
 <h1 align="center">Memento</h1>
 
-A **private, local-first memory layer for your workday** — a native macOS app
-modeled on tools like Minimi/Shram, but with **no cloud database and no data
-leaving your Mac**. It watches what you work on, turns it into searchable
-memory, and helps you keep track of the things you promised to do.
+<p align="center"><b>Your Mac remembers what you promised to do.<br>100% local. No cloud. No account.</b></p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Platform: macOS" src="https://img.shields.io/badge/platform-macOS-lightgrey.svg">
+  <img alt="Built with Tauri 2 and Rust" src="https://img.shields.io/badge/built%20with-Tauri%202%20%2B%20Rust-orange.svg">
+  <a href="https://github.com/crstnmac/memento/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/crstnmac/memento?style=flat"></a>
+</p>
 
 <p align="center">
   <img src="docs/screenshots/today.png" alt="Memento's Today screen: a short summary of the day, open follow-ups, and a timeline of captured activity" width="900">
 </p>
 
-<p align="center"><sub>The Today screen.</sub></p>
+Memento is a native macOS menu-bar app that quietly turns your workday (mail,
+Slack, Teams, meetings, voice notes) into searchable memory and a list of
+follow-ups you owe people. Ask it *"what did I promise last Tuesday?"* from any
+app with **⌘⇧L**.
+
+Everything stays on your Mac: SQLite plus a plain-Markdown, Obsidian-compatible
+vault you can open, edit, and delete. The code is open, so you can audit it.
+
+## Why Memento
+
+|  | Cloud screen-recorders | **Memento** |
+|---|---|---|
+| Where your data lives | Their servers (or opaque local blobs) | A SQLite file and Markdown files on your Mac |
+| What gets captured | Often everything on screen | Only an allowlist of work apps; password managers and system UI are never recorded |
+| Works without an LLM | Rarely | Yes. Keyword search (FTS5) and heuristic follow-up detection need no model |
+| Open and auditable | No | Yes, MIT |
+| Your memory is... | Locked in the app | Plain `.md` files you own |
+
+## Quick start
+
+```sh
+git clone https://github.com/crstnmac/memento.git
+cd memento
+npm install
+npm run tauri dev      # development (hot reload)
+npm run tauri build    # release .app
+```
+
+Requires macOS, Node 20+, and a [Rust toolchain](https://rustup.rs). On first
+launch, grant **Accessibility** (required for capture) and **Microphone**
+(required for meeting recording) in System Settings > Privacy & Security. The
+Settings pane opens each permission pane and shows live status.
+
+A prebuilt, signed `.dmg` and a Homebrew cask are on the [roadmap](#roadmap).
 
 <p align="center">
   <img src="docs/screenshots/popover.png" alt="Memento's menu-bar popover: capture status, an Ask your day box, pause and record controls, a quick note box, and open follow-ups" width="340">
 </p>
 
-<p align="center"><sub>The menu-bar popover: ask a question, pause, record, jot a note, or tick off a follow-up without opening the app.<br>Screenshots use sample data.</sub></p>
+<p align="center"><sub>The menu-bar popover. Screenshots use sample data.</sub></p>
 
-## What it does
+## Features
 
 - **Runs from the menu bar.** Captures quietly in the background; the main
   window opens on demand. Closing the window hides the app — it keeps running.
@@ -70,46 +107,6 @@ memory, and helps you keep track of the things you promised to do.
   visits, conversations, action items, agent runs) mirrored into the Markdown
   memory vault.
 
-## Stack
-
-- **Shell** — Tauri 2 (Rust backend in `src-tauri/`)
-- **Frontend** — React + TypeScript + Vite in `src/`
-- **UI** — shadcn/ui (nova preset, Base UI primitives)
-- **Storage** — SQLite (rusqlite, bundled) + FTS5 in `src-tauri/src/db.rs`;
-  Obsidian-compatible Markdown vault (`src-tauri/src/vault.rs`)
-- **Local AI** — native **Whisper Tiny** transcription (whisper.cpp bindings
-  via [`transcribe-rs`](https://crates.io/crates/transcribe-rs),
-  Metal-accelerated). No embedding models — the Markdown vault is the memory.
-- **OS integration** — Accessibility (AX) capture, menu-bar tray, audio capture
-
-## Run it
-
-```sh
-npm install
-npm run tauri dev      # development (hot reload)
-npm run tauri build    # release .app
-```
-
-On first launch, grant the permissions the app asks for in **System Settings >
-Privacy & Security**: **Accessibility** (required for capture), **Microphone**
-(required for meeting recording). The Settings pane in the app opens each
-permission pane and shows live status.
-
-## The views
-
-- **Timeline** — search and filter your captured memory; read and delete
-  entries.
-- **Threads** — work sessions grouped by app, with **eras of state**: a frozen-
-  per-hour version history per thread (word counts, live/frozen badges).
-- **Meetings** — start/stop a recording (meeting or **voice note**); it
-  transcribes locally and turns the transcript into a titled meeting memory +
-  action items, or a lighter voice note. micwatch can auto-start/auto-stop.
-- **Actions** — commitments extracted from memory and meetings: urgent/unread
-  badges, scheduled reminders, batch nudge banner, local summary agent,
-  resolve/dismiss/+1h.
-- **Settings** — permission status, capture pause, micwatch controls, reminder
-  nudges, audio/transcription model choices, MCP server, and your database path.
-
 ## Local MCP server ("LLM brain")
 
 Settings → **LLM brain — local MCP** starts an on-device server exposing the
@@ -118,52 +115,29 @@ Claude Desktop connects through the bundled `mcpStdio.cjs` bridge — press
 **Add to Claude Desktop** (config is written; restart Claude to pick it up).
 All tool calls run against the local database; nothing is relayed.
 
-## Command surface
+## Privacy
 
-All Tauri commands live in `src-tauri/src/lib.rs`; the typed JS client is
-`src/lib/api.ts`. Server events (`memory-new`, `recording-stopped`,
-`recording-started`, `recording-auto-stopped`, `reminders-due`,
-`versions-updated`, `pause-changed`, `new-memory`, `visit`) keep the UI in
-sync with capture, meeting recording, and nudges.
+Read [PRIVACY.md](PRIVACY.md) for exactly what is captured, where it is stored,
+and what never leaves your Mac.
 
-## Layout
+## Roadmap
 
-- `src-tauri/src/lib.rs` — Tauri setup, tray, event wiring, ~45 commands
-- `src-tauri/src/db.rs` — SQLite schema + CRUD + FTS5 keyword search +
-  memory versions + reminder queue
-- `src-tauri/src/monitor.rs` — background Accessibility watcher (app visits +
-  visible-text capture)
-- `src-tauri/src/ax.rs` — Accessibility (AX) helpers via objc2
-- `src-tauri/src/audio.rs` — microphone + system-audio recording (cpal /
-  ScreenCaptureKit)
-- `src-tauri/src/transcribe.rs` — native transcription: GGML model download &
-  cache, WAV decode/resample/mixdown, whisper.cpp inference, transcript events
-- `src-tauri/src/adapters.rs` — per-app capture allowlist: one parser per
-  supported app/web service, privacy gates, generic activity returns nothing
-- `src-tauri/src/actions.rs` — local action-item heuristics (urgency/scheduling)
-- `src-tauri/src/versions.rs` — hourly thread snapshot + freeze worker
-- `src-tauri/src/reminders.rs` — due-reminder batching, DND hook, nudge worker
-- `src-tauri/src/micwatch.rs` — auto start/stop + max-duration clamp
-- `src-tauri/src/mcp_http.rs` — local SSE MCP server; `local_tools.rs` — tool surface
-- `src-tauri/src/vault.rs` — Obsidian-compatible Markdown memory vault
-  (export + `notes/` ingest, 60s sync worker)
-- `src-tauri/src/tray.rs` — menu-bar tray
-- `mcpStdio.cjs` — Claude Desktop ⇄ local MCP bridge
-- `src/lib/store.tsx` — frontend state + event-driven transcription status
-- `src/components/*` — the shadcn views
-## Notes & limitations
+- [ ] Signed and notarized `.dmg` in GitHub Releases
+- [ ] Homebrew cask (`brew install --cask memento`)
+- [ ] System-audio capture for meetings (ScreenCaptureKit bridge)
+- [ ] More capture adapters (see [good first issues](https://github.com/crstnmac/memento/labels/good%20first%20issue))
+- [ ] Encrypted-at-rest database option
 
-- **Models**: the Whisper Tiny GGML model (`ggml-tiny.en.bin` /
-  `ggml-tiny.bin`) is fetched from the Hugging Face CDN on first use into
-  `~/Library/Application Support/dev.poppy.memento/models/`. All
-  **computation is local** — no memory content is ever sent to a server.
-- **System audio** (other participants) is not yet wired up — the extension
-  point exists (`audio::spawn_system`) but requires the Swift-based
-  ScreenCaptureKit bridge, which is not bundled yet. Microphone capture works.
-- The bundle identifier is `dev.poppy.memento`; local data lives in
-  `~/Library/Application Support/dev.poppy.memento/memento.db`.
-- The original Native SDK demo (`core.ts`, `app.native`) is archived in
-  `legacy/`.
+## Docs
+
+- [Architecture and file layout](docs/ARCHITECTURE.md)
+- [Contributing](CONTRIBUTING.md)
+
+## Contributing
+
+Issues and PRs are welcome. New capture adapters are the easiest way in; start
+with [CONTRIBUTING.md](CONTRIBUTING.md). If Memento is useful to you, a star
+helps others find it.
 
 ## License
 
